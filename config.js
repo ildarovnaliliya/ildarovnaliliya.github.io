@@ -1,6 +1,6 @@
 // Контакты студии. Адрес можно добавить позднее.
 window.SITE_CONFIG = {
-  brand: 'Aliya & Liliy',
+  brand: 'Aliya & Liliya',
   city: 'Казань',
   telegram: 'https://t.me/Cosmetology_Twins',
   whatsapp: '79868784333',
