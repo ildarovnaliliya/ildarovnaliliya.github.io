@@ -4,7 +4,7 @@ const specialists = window.SPECIALISTS || [];
 let selectedSpecialist = 0;
 let catalog = [];
 const specialistBox = document.querySelector('.specialist-picker');
-const money = row => typeof row.price === 'number' ? `${row.price.toLocaleString('ru-RU')} ₽` : row.price;
+const money = window.formatPrice;
 const categoryBox = document.querySelector('.categories');
 const list = document.querySelector('#price-list');
 function renderCategory(index) {
