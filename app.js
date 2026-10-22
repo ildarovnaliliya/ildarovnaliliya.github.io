@@ -1,7 +1,10 @@
 'use strict';
 const config = window.SITE_CONFIG || {};
-const catalog = window.CATALOG || [];
-const money = row => `${row.prefix || ''}${row.price.toLocaleString('ru-RU')} ₽`;
+const specialists = window.SPECIALISTS || [];
+let selectedSpecialist = 0;
+let catalog = [];
+const specialistBox = document.querySelector('.specialist-picker');
+const money = row => typeof row.price === 'number' ? `${row.price.toLocaleString('ru-RU')} ₽` : row.price;
 const categoryBox = document.querySelector('.categories');
 const list = document.querySelector('#price-list');
 function renderCategory(index) {
@@ -16,12 +19,20 @@ function renderCategory(index) {
   const info=document.createElement('div'),name=document.createElement('h4'),detail=document.createElement('small'),button=document.createElement('button');
   name.textContent=row.name; detail.textContent=row.detail;button.textContent=money(row);
   button.setAttribute('aria-label',`Обсудить запись: ${row.name}, ${money(row)}`);
-  button.addEventListener('click',()=>openBooking(`${row.name}${row.detail ? ' ('+row.detail+')' : ''} — ${money(row)}`));
+  button.addEventListener('click',()=>openBooking(`${specialists[selectedSpecialist].bookingName}: ${row.name} — ${money(row)}`));
   info.append(name,detail);item.append(info,button);list.append(item);
  });
 }
-catalog.forEach((g,i)=>{const b=document.createElement('button');b.textContent=g.title;b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>renderCategory(i));categoryBox.append(b);});
-if(catalog.length)renderCategory(0);
+function selectSpecialist(index) {
+ selectedSpecialist=index;
+ catalog=specialists[index].groups;
+ specialistBox.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
+ categoryBox.replaceChildren();
+ catalog.forEach((g,i)=>{const b=document.createElement('button');b.type='button';b.textContent=g.title;b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>renderCategory(i));categoryBox.append(b);});
+ if(catalog.length)renderCategory(0);
+}
+specialists.forEach((person,i)=>{const b=document.createElement('button');b.type='button';b.textContent=person.name;b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>selectSpecialist(i));specialistBox.append(b);});
+if(specialists.length)selectSpecialist(0);
 const dialog=document.querySelector('#booking'), message=document.querySelector('#message');
 function safeURL(raw){try{const u=new URL(raw);return u.protocol==='https:'?u.href:null;}catch{return null;}}
 function channels(text=''){
